@@ -1,10 +1,19 @@
 from django.http import HttpResponse
-from django.shortcuts import render
-# Create your views here.
-def home_page(request):
-    if request.method == 'POST':
-        return render(request,'home.html', {
-            'new_item_text':request.POST['item_text']
-        })
+from django.shortcuts import render, redirect
 
-    return render(request,'home.html')
+# Create your views here.
+from lists.models import Item
+
+
+def home_page(request):
+
+    if request.method == 'POST':
+
+        new_item_text = request.POST['item_text']
+        Item.objects.create(text=new_item_text)
+        return redirect('/')
+
+    return render(request,'home.html', {
+            'item_list': Item.objects.all()
+    })
+

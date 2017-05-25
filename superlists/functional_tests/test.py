@@ -1,8 +1,8 @@
+import os
+
 from django.test import LiveServerTestCase
 from selenium import webdriver
-import os
-import unittest
-#points to the path where the chromedriver is installed
+# points to the path where the chromedriver is installed
 from selenium.webdriver.common.keys import Keys
 
 chrome_driver_path = "/home/yang/Downloads"
@@ -40,7 +40,7 @@ class NewVisitorTest(LiveServerTestCase):
 
         # She types "Buy peacock feathers" into a text box (Edith's hobby
         # is tying fly-fishing lures)
-        value1 = 'Buy peacock feather'
+        value1 = 'Buy peacock feathers'
         inputbox.send_keys(value1)
 
         # When she hits enter, the page updates, and now the page lists
@@ -49,14 +49,7 @@ class NewVisitorTest(LiveServerTestCase):
 
         edith_list_url = self.browser.current_url
         self.assertRegex(edith_list_url, '/lists/.+')  # 1
-        self.check_for_row_in_list_table('1: Buy peacock feathers')
-
         self.check_for_row_in_list_table("1: " + value1)
-
-        # self.assertTrue(
-        #     any(row.text == '1: Buy peacock feathers' for row in rows),
-        #     "New to-do item did not appear in the table"
-        # )
 
 
         inputbox = self.browser.find_element_by_id('id_new_item')

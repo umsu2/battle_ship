@@ -15,19 +15,8 @@ class HomePageTest(TestCase):
         found = resolve('/')
         self.assertEquals(found.func, home_page)
 
-    def test_home_page_only_saves_items_when_necessary(self):
-        request = HttpRequest()
-        home_page(request)
-        self.assertEqual(Item.objects.count(), 0)
 
-    def test_home_page_can_redirect_post_request(self):
 
-        request = HttpRequest()
-        request.method = 'POST'
-        request.POST['item_text'] = 'A new list item'
-        response = home_page(request)
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'], '/lists/some_list1/')
 
     def test_home_page_returns_correct_html(self):
     # this test will not pass because render_to_string only takes the html and does not insert template vars
@@ -49,15 +38,7 @@ class HomePageTest(TestCase):
         self.assertIn(b'<title>To-Do lists</title>', response.content)
         self.assertTrue(response.content.endswith(b'</html>'))
 
-    def test_home_page_can_save_a_post_request(self):
-        request = HttpRequest()
-        request.method = 'POST'
-        request.POST['item_text'] = 'A new list item'
-        response = home_page(request)
 
-        self.assertEqual(Item.objects.count(), 1)
-        new_item = Item.objects.first()
-        self.assertEqual(new_item.text, 'A new list item')
 
 
 
@@ -95,3 +76,27 @@ class ListViewTest(TestCase):
     def test_uses_list_template(self):
         response = self.client.get('/lists/some_list1/')
         self.assertTemplateUsed(response,'list.html')
+
+class NewListTest(TestCase):
+
+
+    def test_redirect_post_request(self):
+
+        response = self.client.post(
+            '/lists/new',
+            data={'item_text': 'A new list item'}
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response,'/lists/some_list1/')
+        self.assertEqual(response['location'], '/lists/some_list1/')
+
+    def test_saving_a_post_request(self):
+
+        self.client.post(
+            '/lists/new',
+            data={'item_text': 'A new list item'}
+        )
+        self.assertEqual(Item.objects.count(), 1)
+        new_item = Item.objects.first()
+        self.assertEqual(new_item.text, 'A new list item')
+

@@ -1,6 +1,6 @@
 import os
 
-from django.test import LiveServerTestCase
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 # points to the path where the chromedriver is installed
 from selenium.webdriver.common.keys import Keys
@@ -10,7 +10,7 @@ os.environ["PATH"] += os.pathsep + chrome_driver_path
 
 
 
-class NewVisitorTest(LiveServerTestCase):
+class NewVisitorTest(StaticLiveServerTestCase):
 
     def setUp(self):
         self.browser = webdriver.Chrome()

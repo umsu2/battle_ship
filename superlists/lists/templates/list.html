@@ -1,4 +1,3 @@
-
 {% extends 'base.html' %}
 
 {% block header_text %}Your To-Do list {% endblock %}
@@ -7,7 +6,7 @@
 
 {% block table %}
 
-        <table id="id_list_table">
+        <table id="id_list_table" class="table">
 
             {% for item in list_.item_set.all %}
                 <tr><td>{{ forloop.counter }}: {{item.text}}</td></tr>

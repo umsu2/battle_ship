@@ -1,3 +1,4 @@
+from django.test import LiveServerTestCase
 from selenium import webdriver
 import os
 import unittest
@@ -9,7 +10,7 @@ os.environ["PATH"] += os.pathsep + chrome_driver_path
 
 
 
-class NewVisitorTest(unittest.TestCase):
+class NewVisitorTest(LiveServerTestCase):
 
     def setUp(self):
         self.browser = webdriver.Chrome()
@@ -25,7 +26,7 @@ class NewVisitorTest(unittest.TestCase):
 
     def test_can_start_a_list_and_retrieve_it_later(self):
         # Bob has heard about a cool online to-do app. he goes to checkout its home page
-        self.browser.get('http://localhost:8080')
+        self.browser.get(self.live_server_url)
 
         # Bob notices the title says it is a to-do list
         self.assertIn('To-Do', self.browser.title)
@@ -75,5 +76,3 @@ class NewVisitorTest(unittest.TestCase):
 
         # Satisfied, she goes back to sleep
         self.fail('Finish the Test')
-if __name__ == '__main__':
-    unittest.main(warnings='ignore')

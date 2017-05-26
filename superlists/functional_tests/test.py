@@ -1,5 +1,6 @@
 import os
 
+import sys
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 # points to the path where the chromedriver is installed
@@ -11,6 +12,21 @@ os.environ["PATH"] += os.pathsep + chrome_driver_path
 
 
 class NewVisitorTest(StaticLiveServerTestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        live_address = os.environ.get('liveserver')
+        if live_address:
+                cls.server_url = "http://" + live_address
+                return
+        super().setUpClass()
+        cls.server_url = cls.live_server_url
+
+    @classmethod
+    def tearDownClass(cls):
+        if os.environ.get('live_server'):
+        # if hasattr(cls, 'server_url') and cls.server_url == cls.live_server_url:
+            super().tearDownClass()
 
     def setUp(self):
         self.browser = webdriver.Chrome()
@@ -26,7 +42,7 @@ class NewVisitorTest(StaticLiveServerTestCase):
 
     def test_can_start_a_list_and_retrieve_it_later(self):
         # Bob has heard about a cool online to-do app. he goes to checkout its home page
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
 
         # Bob notices the title says it is a to-do list
         self.assertIn('To-Do', self.browser.title)
@@ -67,7 +83,7 @@ class NewVisitorTest(StaticLiveServerTestCase):
 
         # Francis visits the home page.  There is no sign of Edith's
         # list
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
         page_text = self.browser.find_element_by_tag_name('body').text
         self.assertNotIn('Buy peacock feathers', page_text)
         self.assertNotIn('make a fly', page_text)
@@ -96,7 +112,7 @@ class NewVisitorTest(StaticLiveServerTestCase):
 
     def test_layout_and_styling(self):
         # Edith goes to the home page
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
         self.browser.set_window_size(1024, 768)
 
         # She notices the input box is nicely centered
